@@ -1,5 +1,7 @@
 # The deffinitive ESP32 and ESP8266 configuration Arduino library, uEspConfigLib
 
+Master status:  ![Arduino CI](https://github.com/Naguissa/uEspConfigLib/workflows/arduino_ci/badge.svg)
+
 ## What is this repository for?
 
 This library consist in 2 parts:
