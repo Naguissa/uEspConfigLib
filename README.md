@@ -298,7 +298,9 @@ You can read documentation online here: https://naguissa.github.io/uEspConfigLib
 
 ## Example
 
-Included on example folder, available on Arduino IDE. The example shows example code in this file but with a fully working sketch and adds extra use cases.
+Included on examples folder, available on Arduino IDE. The example shows example code in this file but with a fully working sketch and adds extra use cases.
+
+See examples/uEspConfigLib_example/uEspConfigLib_example.ino
 
 
 ## Who do I talk to?
