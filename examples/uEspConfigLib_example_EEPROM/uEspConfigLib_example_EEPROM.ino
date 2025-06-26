@@ -18,12 +18,15 @@
  * @version 1.1.0
  */
 
+
+/**************************************************
+ *  WARNING: This example needs uEEPROMLib.       *
+ *         You can find it at Library Manager     *
+ **************************************************/
+
+
 #include "Arduino.h"
 
-#include "uEspConfigLibFSNone.h"
-#include "uEspConfigLibFSSpiffs.h"
-#include "uEspConfigLibFSLittlefs.h"
-#include "uEspConfigLibFSSd.h"
 #include "uEspConfigLibFSEEPROM.h"
 #include "uEspConfigLib.h"
 
@@ -31,10 +34,7 @@
 
 // Caution: It need to be a global variable or a global pointer.
 // if FS is a 'setup' variable it will lead to crashes
-uEspConfigLibFSInterface * configFsA;
-uEspConfigLibFSInterface * configFsB;
-uEspConfigLibFSInterface * configFsC;
-uEspConfigLibFSInterface * configFsD;
+uEspConfigLibFSInterface * configFs;
 uEspConfigLib * config;
 
 
@@ -57,6 +57,12 @@ void handleDefault();
 
 
 void setup() {
+    #ifdef ARDUINO_ARCH_ESP8266
+		Wire.begin(0, 2); // D3 and D4 on ESP8266
+	#else
+		Wire.begin();
+	#endif
+
     Serial.begin(115200);
     Serial.println();
     Serial.println("init");
@@ -64,26 +70,12 @@ void setup() {
 
     Serial.println(" - SETUP -");
    
-
-    configFsA = new uEspConfigLibFSNone("/config.ini", true);
-    if (configFsA->status() == uEspConfigLibFS_STATUS_FATAL) {
-        Serial.println("  * Error initializing FS none");
-    }
-    // Cannot use SPIFFS and LittleFS at same time
-    //configFsB = new uEspConfigLibFSSpiffs("/config.ini", true);
-    //if (configFsB->status() == uEspConfigLibFS_STATUS_FATAL) {
-    //    Serial.println("  * Error initializing FS SPIFFS");
-    //}
-    configFsC = new uEspConfigLibFSLittlefs("/config.ini", true);
-    if (configFsC->status() == uEspConfigLibFS_STATUS_FATAL) {
-        Serial.println("  * Error initializing FS LittleFS");
-    }
-    configFsD = new uEspConfigLibFSSd("/config.ini", true);
-    if (configFsD->status() == uEspConfigLibFS_STATUS_FATAL) {
-        Serial.println("  * Error initializing FS SD");
+    configFs = new uEspConfigLibFSEEPROM("", true);
+    if (configFs->status() == uEspConfigLibFS_STATUS_FATAL) {
+        Serial.println("  * Error initializing FS EEPROM");
     }
     
-    config = new uEspConfigLib(configFsC);
+    config = new uEspConfigLib(configFs);
 
     char * readResult;
 

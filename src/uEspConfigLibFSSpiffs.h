@@ -8,7 +8,7 @@
  *
  * One interface to manage different configuration storages.
  * 
- * Currently storage classes are: SD-card, LittleFS, SPIFFS and none (values are lost after restart).
+ * Currently storage classes are: SD-card, LittleFS, SPIFFS, EEPROM and none (values are lost after restart).
  *
  *
  * @file uEspConfigLibFSSpiffs.h
@@ -16,7 +16,7 @@
  * @author Naguissa
  * @see <a href="https://github.com/Naguissa/uEspConfigLib">https://github.com/Naguissa/uEspConfigLib</a>
  * @see <a href="mailto:naguissa@foroelectro.net">naguissa@foroelectro.net</a>
- * @version 1.0.0
+ * @version 1.1.0
  */
 #pragma once
 

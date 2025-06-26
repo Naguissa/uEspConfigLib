@@ -1,6 +1,6 @@
 /**
- * \class uEspConfigLibFSNone
- * \brief The deffinitive ESP32 and ESP8266 configuration Arduino library, uEspConfigLib - NO FileSystem interface implementation part
+ * \class uEspConfigLibFSEEPROM
+ * \brief The deffinitive ESP32 and ESP8266 configuration Arduino library, uEspConfigLib - EEPROM FileSystem interface implementation part
  *
  * This library consist in 2 parts:
  *
@@ -8,36 +8,44 @@
  *
  * One interface to manage different configuration storages.
  * 
- * Currently storage classes are: SD-card, LittleFS, SPIFFS, EEPROM and none (values are lost after restart).
+ * Currently storage classes are: SD-card, LittleFS, SPIFFS and none (values are lost after restart).
  *
  *
- * @file uEspConfigLibFSNone.h
+ * @file uEspConfigLibFSEEPROM.h
  * @copyright Naguissa
  * @author Naguissa
  * @see <a href="https://github.com/Naguissa/uEspConfigLib">https://github.com/Naguissa/uEspConfigLib</a>
  * @see <a href="mailto:naguissa@foroelectro.net">naguissa@foroelectro.net</a>
  * @version 1.1.0
- */#pragma once
+ */
+#pragma once
 
 #include <Arduino.h>
 #include "uEspConfigLibFSInterface.h"
+#include "uEEPROMLib.h"
 
-class uEspConfigLibFSNone : public uEspConfigLibFSInterface {
+
+class uEspConfigLibFSEEPROM : public uEspConfigLibFSInterface {
+
+    #define uEspConfigLibFSEEPROM_BUFFER_SIZE 128
+
     public:
         /**
          * \brief Constructor
          *
          * @param init Set to true if you want to initialize and format (if needed) the filesystem
+         * @param address EEPROM I2C address
          */
-        uEspConfigLibFSNone(const bool);
+        uEspConfigLibFSEEPROM(const bool=false, const uint8_t = UEEPROMLIB_ADDRESS);
 
         /**
          * \brief Constructor
          *
-         * @param unused File path on filesystem
+         * @param path File path on filesystem
          * @param init Set to true if you want to initialize and format (if needed) the filesystem
+         * @param address EEPROM I2C address
          */
-        uEspConfigLibFSNone(const char*, const bool);
+        uEspConfigLibFSEEPROM(const char*, const bool=false, const uint8_t = UEEPROMLIB_ADDRESS);
 
         /**
          * \brief Opens the file for read
@@ -77,7 +85,13 @@ class uEspConfigLibFSNone : public uEspConfigLibFSInterface {
         bool closeFile();
 
     private:
+        bool _writeFlush();
+        byte _buffer[uEspConfigLibFSEEPROM_BUFFER_SIZE];
+        unsigned int _position = 0;
+        unsigned int _bufferPosition = 0;
         uint8_t _status;
-        char * _path = 0;
-};
+        bool _saveInComment = false;
+        bool _saveLineStart = true;
+        uEEPROMLib * _eeprom;
+    };
 
