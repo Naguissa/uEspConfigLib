@@ -64,7 +64,7 @@ void setup() {
     Serial.println(" - SETUP -");
    
     configFs = new uEspConfigLibFSEEPROM("", true);
-    if (configFsE->status() == uEspConfigLibFS_STATUS_FATAL) {
+    if (configFs->status() == uEspConfigLibFS_STATUS_FATAL) {
         Serial.println("  * Error initializing FS EEPROM");
     }
     
