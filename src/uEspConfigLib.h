@@ -16,7 +16,7 @@
  * @author Naguissa
  * @see <a href="https://github.com/Naguissa/uEspConfigLib">https://github.com/Naguissa/uEspConfigLib</a>
  * @see <a href="mailto:naguissa@foroelectro.net">naguissa@foroelectro.net</a>
- * @version 1.1.0
+ * @version 1.2.0
  */
 #pragma once
 
@@ -38,17 +38,29 @@
 #endif
 
 
+/**
+ * \brief Regular field
+ */
+#define uEspConfigLib_OPTION_NONE 0
+/**
+ * \brief Adds WiFi scanner window to select desired SSID
+ */
+#define uEspConfigLib_OPTION_SCANNER 1
+
+
 struct uEspConfigLibList {
-    uEspConfigLibList() : next(0), name(0), description(0), defaultValue(0), value(0) {};
+    uEspConfigLibList() : next(0), name(0), description(0), defaultValue(0), value(0), option(uEspConfigLib_OPTION_NONE) {};
     uEspConfigLibList *next;
     char * name;
     char * description;
     char * defaultValue;
     char * value;
+    uint8_t option;
 };
 
 #define uEspConfigLib_free(field) if (field != 0) { free(field); field = 0; }
 #define uEspConfigLib_WebServer_sendContent(data) if (*data != 0) { server->sendContent(data); }
+
 
 class uEspConfigLib {
     public:
@@ -66,8 +78,9 @@ class uEspConfigLib {
 		 * @param name Name of configuration option
 		 * @param description Description of the configuration option
 		 * @param defaultValue Default value of the configuration option
+		 * @param option Optional. Special option, uEspConfigLib_OPTION_NONE by default
 		 */
-        void addOption(const char *, const char *, const char *);
+        void addOption(const char *, const char *, const char *, const uint8_t = uEspConfigLib_OPTION_NONE);
 
         /**
          * \brief Changes a configuration option current value
@@ -178,8 +191,9 @@ class uEspConfigLib {
         void _copyValue(uEspConfigLibList *, const String);
         void _copyDescription(uEspConfigLibList *, const char *);
         void _parseConfigLine(String);
+        void _handleWifiScan(uEspConfigLib_WebServer *, const String);
+        void handleWifiScanResult();
         uEspConfigLibList *list;
         uEspConfigLibFSInterface * _fs;
-
 };
 

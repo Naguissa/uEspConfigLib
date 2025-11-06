@@ -15,15 +15,8 @@
  * @author Naguissa
  * @see <a href="https://github.com/Naguissa/uEspConfigLib">https://github.com/Naguissa/uEspConfigLib</a>
  * @see <a href="mailto:naguissa@foroelectro.net">naguissa@foroelectro.net</a>
- * @version 1.1.0
+ * @version 1.2.0
  */
-
-
-/**************************************************
- *  WARNING: This example needs uEEPROMLib.       *
- *         You can find it at Library Manager     *
- **************************************************/
-
 
 #include "Arduino.h"
 
@@ -71,7 +64,7 @@ void setup() {
     Serial.println(" - SETUP -");
    
     configFs = new uEspConfigLibFSEEPROM("", true);
-    if (configFs->status() == uEspConfigLibFS_STATUS_FATAL) {
+    if (configFsE->status() == uEspConfigLibFS_STATUS_FATAL) {
         Serial.println("  * Error initializing FS EEPROM");
     }
     
@@ -82,7 +75,7 @@ void setup() {
     Serial.println("\n - configure -");    
     // 1st step is to define your variables: Name, Description, Default value
     config->addOption("wifi_mode", "WiFi mode (C=Client, other=Access Point)", "");
-    config->addOption("wifi_ssid", "SSID of your WiFi", "Unconfigured_device");
+    config->addOption("wifi_ssid", "SSID of your WiFi", "Unconfigured_device", uEspConfigLib_OPTION_SCANNER);
     config->addOption("wifi_password", "Password of your WiFi", "wifi_password");
     
 

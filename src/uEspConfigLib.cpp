@@ -16,7 +16,7 @@
  * @author Naguissa
  * @see <a href="https://github.com/Naguissa/uEspConfigLib">https://github.com/Naguissa/uEspConfigLib</a>
  * @see <a href="mailto:naguissa@foroelectro.net">naguissa@foroelectro.net</a>
- * @version 1.1.0
+ * @version 1.2.0
  */
 #include <Arduino.h>
 #include "uEspConfigLib.h"
@@ -77,13 +77,14 @@ void uEspConfigLib::_copyDescription(uEspConfigLibList * slot, const char * valu
  * @param description Description of the configuration option
  * @param defaultValue Default value of the configuration option
  */
-void uEspConfigLib::addOption(const char * name, const char * description, const char * defaultValue) {
+void uEspConfigLib::addOption(const char * name, const char * description, const char * defaultValue, const uint8_t option) {
     if (list == 0) {
         list = new uEspConfigLibList;
         _copyName(list, name);
         _copyDescription(list, description);
         _copyDefault(list, defaultValue);
         _copyValue(list, defaultValue);        
+        list->option = option;
         list->next = 0;
         return;
     }
@@ -94,6 +95,7 @@ void uEspConfigLib::addOption(const char * name, const char * description, const
             _copyDescription(slot, description);
             _copyDefault(slot, defaultValue);
             _copyValue(slot, defaultValue);        
+            list->option = option;
             return;
         }
         prev = slot;
@@ -104,6 +106,7 @@ void uEspConfigLib::addOption(const char * name, const char * description, const
     _copyDescription(prev->next, description);
     _copyDefault(prev->next, defaultValue);
     _copyValue(prev->next, defaultValue);        
+    prev->next->option = option;
     prev->next->next = 0;
 }
 
@@ -170,6 +173,11 @@ bool uEspConfigLib::clear(const char *name) {
  * @param path Path where the form will be sent
  */
 void uEspConfigLib::handleConfigRequestHtml(uEspConfigLib_WebServer * server, const char *path) {
+    if(server->arg("option") == "scan" && server->arg("field").length() > 0) {
+        _handleWifiScan(server, server->arg("field"));
+        return;
+    }
+
     server->setContentLength(CONTENT_LENGTH_UNKNOWN);
     yield();
     server->send(200, "text/html", "");
@@ -198,11 +206,25 @@ void uEspConfigLib::handleConfigRequestHtml(uEspConfigLib_WebServer * server, co
         yield();
         uEspConfigLib_WebServer_sendContent(slot->name);
         yield();
+        if (slot->option == uEspConfigLib_OPTION_SCANNER) {
+            server->sendContent("\" id=\"");
+            yield();
+            uEspConfigLib_WebServer_sendContent(slot->name);
+            yield();
+        }
         server->sendContent("\" value=\"");
         yield();
         uEspConfigLib_WebServer_sendContent(slot->value);
         yield();
-        server->sendContent("\"></td></tr>");
+        server->sendContent("\">");
+        yield();
+        if (slot->option == uEspConfigLib_OPTION_SCANNER) {
+            server->sendContent(" <a href=\"javascript:window.open('?option=scan&field=");
+            uEspConfigLib_WebServer_sendContent(slot->name);
+            server->sendContent("')\">Scan</a>");
+            yield();
+        }        
+        server->sendContent("</td></tr>");
         yield();
     }
     server->sendContent("<tr><td colspan=\"2\"><br><center><button type=\"submit\">Send</button></center></td></tr></table></body>");
@@ -410,4 +432,37 @@ bool uEspConfigLib::saveConfigFile() {
 	yield();
 	return true;
 }
+
+void uEspConfigLib::_handleWifiScan(uEspConfigLib_WebServer * server, const String field) {
+    server->setContentLength(CONTENT_LENGTH_UNKNOWN);
+    yield();
+    server->send(200, "text/html", "");
+    yield();
+    server->sendContent("<html><head><title>IoT device config - uConfigLib</title></head><body><p><b>WiFi networks:</b></p>");
+    yield();
+
+    int n = WiFi.scanNetworks();
+    if (n == 0) {
+        server->sendContent("<p><i>No networks found</i></p>");
+        yield();
+    } else {
+        server->sendContent("<ul>");
+        for (int i = 0; i < n; i++) {
+            server->sendContent("<li><a href=\"javascript:window.opener.document.getElementById('" + field + "').value='" + WiFi.SSID(i) + "';window.close();\">" + WiFi.SSID(i) + " - Channel: " + WiFi.channel(i) + " - RSSI: " + WiFi.RSSI(i) + " - Encription: ");
+            yield();
+            switch (WiFi.encryptionType(i)) {
+                case ENC_TYPE_WEP: server->sendContent("WEP"); break;
+                case ENC_TYPE_TKIP: server->sendContent("WPA/PSK"); break;
+                case ENC_TYPE_CCMP: server->sendContent("WPA2/PSK"); break;
+                case ENC_TYPE_NONE: server->sendContent("NONE"); break;
+                case ENC_TYPE_AUTO: server->sendContent("AUTO (WPA/WPA2/PSK)"); break;
+                default: server->sendContent("Unknown"); break;
+            }
+            server->sendContent("</a></li>");
+            yield();
+        }
+        server->sendContent("</ul>");
+    }
+}
+
 

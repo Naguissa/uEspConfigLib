@@ -44,8 +44,13 @@ config = new uEspConfigLib(configFs);
 Finally you need to define your desired configuration options:
 
 ```
-config->addOption("name", "Description", "Default value");
+config->addOption("name", "Description", "Default value"[, Options]);
 ```
+
+Options can be:
+ - uEspConfigLib_OPTION_NONE - Regular behaviour
+ - uEspConfigLib_OPTION_SCANNER - Adds WiFi scanner window to select desired SSID
+
 
 A typical example could be:
 
