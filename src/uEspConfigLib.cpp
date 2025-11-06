@@ -451,11 +451,23 @@ void uEspConfigLib::_handleWifiScan(uEspConfigLib_WebServer * server, const Stri
             server->sendContent("<li><a href=\"javascript:window.opener.document.getElementById('" + field + "').value='" + WiFi.SSID(i) + "';window.close();\">" + WiFi.SSID(i) + " - Channel: " + WiFi.channel(i) + " - RSSI: " + WiFi.RSSI(i) + " - Encription: ");
             yield();
             switch (WiFi.encryptionType(i)) {
-                case ENC_TYPE_WEP: server->sendContent("WEP"); break;
-                case ENC_TYPE_TKIP: server->sendContent("WPA/PSK"); break;
-                case ENC_TYPE_CCMP: server->sendContent("WPA2/PSK"); break;
-                case ENC_TYPE_NONE: server->sendContent("NONE"); break;
-                case ENC_TYPE_AUTO: server->sendContent("AUTO (WPA/WPA2/PSK)"); break;
+                #ifdef ARDUINO_ARCH_ESP32
+                    case WIFI_AUTH_OPEN: server->sendContent("None"); break;
+                    case WIFI_AUTH_WEP: server->sendContent("WEP"); break;
+                    case WIFI_AUTH_WPA_PSK: server->sendContent("WPA/PSK"); break;
+                    case WIFI_AUTH_WPA2_PSK: server->sendContent("WPA2/PSK"); break;
+                    case WIFI_AUTH_WPA_WPA2_PSK: server->sendContent("WPA+WPA2/PSK"); break;
+                    case WIFI_AUTH_WPA2_ENTERPRISE: server->sendContent("WPA2/EAP"); break;
+                    case WIFI_AUTH_WPA3_PSK: server->sendContent("WPA3/PSK"); break;
+                    case WIFI_AUTH_WPA2_WPA3_PSK: server->sendContent("WPA2+WPA3/PSK"); break;
+                    case WIFI_AUTH_WAPI_PSK: server->sendContent("WAPI"); break;
+                #else
+                    case ENC_TYPE_WEP: server->sendContent("WEP"); break;
+                    case ENC_TYPE_TKIP: server->sendContent("WPA/PSK"); break;
+                    case ENC_TYPE_CCMP: server->sendContent("WPA2/PSK"); break;
+                    case ENC_TYPE_NONE: server->sendContent("NONE"); break;
+                    case ENC_TYPE_AUTO: server->sendContent("WPA+WPA2/PSK"); break;
+                #endif
                 default: server->sendContent("Unknown"); break;
             }
             server->sendContent("</a></li>");
