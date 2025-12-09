@@ -30,11 +30,12 @@ configFs = new uEspConfigLibFSNone();
 configFs = new uEspConfigLibFSSpiffs("/config.ini", bool initFS);
 configFs = new uEspConfigLibFSLittlefs("/config.ini", bool initFS);
 configFs = new uEspConfigLibFSSd("/config.ini", bool initFS, uint8_t CS_pin);
-configFs = new uEspConfigLibFSEEPROM("/config.ini", bool initFS, uint8_t CS_pin);
+configFs = new uEspConfigLibFSEEPROM("unused_parameter", bool initFS, uint8_t i2c_address);
 ```
 
 - If initFS option is true the class will initialize the filesystem as needed, even format it if still not done.
 - Use CS_pin on SD card option to define CS pin when you use a non-standard one.
+- Use i2c_address on EEPROM option to define EEPROM's I2C address when you use a non-standard one.
 
 Still on setup, then you define your config object:
 
