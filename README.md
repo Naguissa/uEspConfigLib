@@ -10,7 +10,7 @@ This library consist in 2 parts:
  
  * One interface to manage different configuration storages.
  
-Currently storage classes are: SD-card, LittleFS, SPIFFS and none (values are lost after restart).
+Currently storage classes are: SD-card, LittleFS, SPIFFS, EEPROM and none (values are lost after restart).
 
 
 ## Usage ##
@@ -30,6 +30,7 @@ configFs = new uEspConfigLibFSNone();
 configFs = new uEspConfigLibFSSpiffs("/config.ini", bool initFS);
 configFs = new uEspConfigLibFSLittlefs("/config.ini", bool initFS);
 configFs = new uEspConfigLibFSSd("/config.ini", bool initFS, uint8_t CS_pin);
+configFs = new uEspConfigLibFSEEPROM("/config.ini", bool initFS, uint8_t CS_pin);
 ```
 
 - If initFS option is true the class will initialize the filesystem as needed, even format it if still not done.
@@ -56,7 +57,7 @@ A typical example could be:
 
 ```
 config->addOption("wifi_mode", "WiFi mode (C=Client, other=Access Point)", "");
-config->addOption("wifi_ssid", "SSID of your WiFi", "Unconfigured_device");
+config->addOption("wifi_ssid", "SSID of your WiFi", "Unconfigured_device", uEspConfigLib_OPTION_SCANNER);
 config->addOption("wifi_password", "Password of your WiFi", "wifi_password");
 ```
 

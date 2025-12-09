@@ -59,8 +59,8 @@ struct uEspConfigLibList {
 };
 
 #define uEspConfigLib_free(field) if (field != 0) { free(field); field = 0; }
+#define uEspConfigLib_malloc(value) (char *) malloc(sizeof(char) * (strlen(value) + 1))
 #define uEspConfigLib_WebServer_sendContent(data) if (*data != 0) { server->sendContent(data); }
-
 
 class uEspConfigLib {
     public:

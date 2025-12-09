@@ -40,19 +40,19 @@ uEspConfigLib::uEspConfigLib(uEspConfigLibFSInterface * fs) {
 
 void uEspConfigLib::_copyName(uEspConfigLibList * slot, const char * value) {
     uEspConfigLib_free(slot->name);
-    slot->name = (char *) malloc(sizeof(char) * (strlen(value) + 1));
+    slot->name = uEspConfigLib_malloc(value);
     strcpy(slot->name, value);
 }
 
 void uEspConfigLib::_copyDefault(uEspConfigLibList * slot, const char * value) {
     uEspConfigLib_free(slot->defaultValue);
-    slot->defaultValue = (char *) malloc(sizeof(char) * (strlen(value) + 1));
+    slot->defaultValue = uEspConfigLib_malloc(value);
     strcpy(slot->defaultValue, value);
 }
 
 void uEspConfigLib::_copyValue(uEspConfigLibList * slot, const char * value) {
     uEspConfigLib_free(slot->value);
-    slot->value = (char *) malloc(sizeof(char) * (strlen(value) + 1));
+    slot->value = uEspConfigLib_malloc(value);
     strcpy(slot->value, value);
 }
 
@@ -64,7 +64,7 @@ void uEspConfigLib::_copyValue(uEspConfigLibList * slot, const String value) {
 
 void uEspConfigLib::_copyDescription(uEspConfigLibList * slot, const char * value) {
     uEspConfigLib_free(slot->description);
-    slot->description = (char *) malloc(sizeof(char) * (strlen(value) + 1));
+    slot->description = uEspConfigLib_malloc(value);
     strcpy(slot->description, value);
 }
 

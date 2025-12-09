@@ -187,7 +187,8 @@ bool uEspConfigLibFSEEPROM::_writeFlush() {
  */
 bool uEspConfigLibFSEEPROM::closeFile() {
     if (_status == uEspConfigLibFS_STATUS_OPEN_WRITE && _bufferPosition > 0) {
-        _writeFlush();
+        _status = uEspConfigLibFS_STATUS_CLOSED;
+        return _writeFlush();
     }
     if (_status == uEspConfigLibFS_STATUS_OPEN_READ || _status == uEspConfigLibFS_STATUS_OPEN_WRITE) {    
         _status = uEspConfigLibFS_STATUS_CLOSED;
