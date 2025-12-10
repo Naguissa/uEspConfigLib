@@ -76,6 +76,7 @@ void uEspConfigLib::_copyDescription(uEspConfigLibList * slot, const char * valu
  * @param name Name of configuration option
  * @param description Description of the configuration option
  * @param defaultValue Default value of the configuration option
+ * @param option Optional. Lets you specify extra features of this configuration option. i.e.: uEspConfigLib_OPTION_SCANNER for SSID scanner
  */
 void uEspConfigLib::addOption(const char * name, const char * description, const char * defaultValue, const uint8_t option) {
     if (list == 0) {
