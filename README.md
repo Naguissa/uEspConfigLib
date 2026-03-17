@@ -107,7 +107,7 @@ Following previous example:
     
 ```
 config->set("wifi_mode", "A");
-config->set("wifi_ssid", "uEspConfigLib_EXAMPLE");
+config->set("wifi_ssid", "uEspConfigLib_EXAMPLE", uEspConfigLib_OPTION_SCANNER);
 config->set("wifi_password", "");
 ```
 
